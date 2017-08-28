@@ -12,7 +12,7 @@ $usage .= "FILTERING OPTIONS:\n";
 $usage .= "--cov <minium coverage ratio>, [0,1], Default=0\n";
 $usage .= "--maf <minium allele frequency>, [0,1], Default=0\n";
 $usage .= "--keep <keep sample list>\n";
-#$usage .= "--bed <keep region list> in BED format.\n";
+$usage .= "--bed <keep region list> in BED format.\n";
 $usage .= "--pass to keep SNPs with filter TAG [PASS] or [SnpCluster].\n\n";
 
 GetOptions(
@@ -89,6 +89,7 @@ my @keepRanks = ();
 my @remained_chrs = ();
 my $chr_tmp = "";
 my @regions = ();
+my %hash_chr; # This hash is used to check the end of the region list and stop reading vcf
 
 while(<IN>){
 	chomp;
@@ -121,15 +122,56 @@ while(<IN>){
 	# split line
 	my($chr,$pos,$id,$ref,$alt,$qual,$filter,$info,$format,$datas_join) = split/\t/,$_,10;
 
-=this function is under construction
+#=this function is under construction
 	
 	# Check if the position locates in the candidate regions
 	goto NOBED unless(defined $regList);
 	
+	next unless(exists $hash_bed{$chr});
+	if($chr ne $chr_tmp){
+		@regions = ();
+		foreach my $start(sort {$a <=> $b} keys %{$hash_bed{$chr}}){
+			my $end = $hash_bed{$chr}{$start};	
+			push @regions, "$start,$end";
+		}
+		$chr_tmp = $chr;
+		if(exists $hash_chr{$chr}){
+			delete($hash_chr{$chr});
+		}
+		@remained_chrs = keys %hash_chr;
+		print "\t# Reading chr:$chr\n";
+		if(@regions == 0){
+			print "\t# Skipping chr:$chr\n";
+		}
+	}
 	
+	if(@remained_chrs == 0 and @regions == 0){
+		last;
+	}
+
+	if(@regions == 0){
+		next;
+	}
+	
+	my $pickIt = 0;
+	for(my $i = 0; $i < @regions; $i++){
+		my($start,$end) = split/,/,$regions[$i];
+		if($pos < $start){
+			last;
+		}elsif($pos > $end){
+			splice(@regions, $i, 1);
+			$i--;
+			next;
+		}else{
+			$pickIt = 1;
+			last;
+		}
+	}
+
+	next unless($pickIt == 1);
 	NOBED:
 
-=cut
+#=cut
 
 	# Check if the variant is a bi-allelic SNP
 	next unless(length($ref) == 1 and length($alt) == 1);
