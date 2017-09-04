@@ -195,7 +195,7 @@ while(<IN>){
 	print SNP "$chr\t$pos\t$ref\t$alt\n";
 	my $genoline = "";
 	foreach my $rank(@keepRanks){
-		my $data = $keepDatas[$rank];
+		my $data = $datas[$rank];
 		my $geno = vcf2geno($data);
 		$genoline .= $geno;
 	}
