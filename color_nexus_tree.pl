@@ -8,7 +8,7 @@ my $usage = "Add color to NEXUS tree.\n";
 $usage .= "USAGE:\nperl $0 <input nexus tree> <output> <sample color list>\n";
 $usage .= "<input nexus tree> is a tree of NEXUS format with no color annotation.\n";
 $usage .= "<output> is the name of output tree.\n";
-$usage .= "<sample color list> is a tab-delimited list of samples and their corresponding color code(someting like: #0033ff).\n";
+$usage .= "<sample color list> is a tab-delimited list of samples and their corresponding RGB color code(someting like: #0033ff).\n";
 
 =sample list format
 Sample_Y220	#0033ff
