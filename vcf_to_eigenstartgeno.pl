@@ -245,8 +245,8 @@ sub get_cov_maf{
 		}
 	}
 	
-	my $cov = 1 - $lostcount/@genos;
-	my $maf = $altcount/@genos;
+	my $cov = 1 - ($lostcount/@genos)/2;
+	my $maf = ($altcount/@genos)/2;
 	my $maf2 = $cov - $maf;
 	if($maf > $maf2){
 		$maf = $maf2;
