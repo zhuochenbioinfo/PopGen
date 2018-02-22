@@ -65,9 +65,11 @@ sub checkNumeric{
 	my @nums = @_;
 	my @out = ();
 	my $reg1 = qr/^-?\d+(\.\d+)?$/;
-	my $reg2 = qr/^-?0(\d+)?$/;
+	my $reg2 = qr/^-?0(\d+)$/;
+	my $reg3 = qr/^-0(\d+)?$/;
+	my $reg4 = qr/^-?\d+(\.\d+)?e-?\d+?$/;
 	foreach my $num(@nums){
-		next unless($num =~ $reg1 && $num !~ $reg2);
+		next unless(($num =~ $reg1 || $num =~ $reg4) && $num !~ $reg2 && $num !~ $reg3);
 		push @out,$num;
 	}
 	return(@out);
