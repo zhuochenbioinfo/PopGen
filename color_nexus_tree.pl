@@ -38,12 +38,12 @@ my $trigger = 0;
 
 while(<IN>){
 	chomp;
-	if($_ =~ /^begin/){
+	if($_ =~ /^begin tree/i){
 		$trigger = 1;
 		print OUT $_."\n";
 		next;
 	}
-	if($_ =~ /^end/){
+	if($_ =~ /^end/i){
 		$trigger = 0;
 	}
 	if($trigger == 0){
