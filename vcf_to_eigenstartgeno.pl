@@ -2,9 +2,9 @@ use strict;
 use warnings;
 use Getopt::Long;
 
-my($vcf,$outName,$cov,$maf,$pass,$keepList,$regList);
+my($vcf,$outName,$cov,$maf,$pass,$pass1,$keepList,$regList);
 my $usage = "\nTransform vcf to eigenstart geno format.\nBy Zhuo Chen\nEmail: zhuochenbioinfo\@gmail.com\n\n";
-$usage .= "Notice: the program pick only bi-allelic SNPs.\n";
+$usage .= "Notice: the program picks only bi-allelic SNPs.\n";
 $usage .= "USAGE:\nperl $0 --in <input vcf> --out <output prefix>\n";
 $usage .= "<input vcf> is the input vcf file. [Necessary]\n";
 $usage .= "<output prefix> is the prefix of output files. [Necessary]\n";
@@ -13,7 +13,8 @@ $usage .= "--cov <minium coverage ratio>, [0,1], Default=0\n";
 $usage .= "--maf <minium allele frequency>, [0,1], Default=0\n";
 $usage .= "--keep <keep sample list>\n";
 $usage .= "--bed <keep region list> in BED format.\n";
-$usage .= "--pass to keep SNPs with filter TAG [PASS] or [SnpCluster].\n\n";
+$usage .= "--pass to keep SNPs with filter TAG [PASS] or [SnpCluster].\n";
+$usage .= "--pass1 to keep SNPs with filter TAG [PASS].\n\n";
 
 GetOptions(
 	"in=s" => \$vcf,
@@ -21,6 +22,7 @@ GetOptions(
 	"cov=s" => \$cov,
 	"maf=s" => \$maf,
 	"pass!" => \$pass,
+	"pass1!" => \$pass1,
 	"keep=s" => \$keepList,
 	"bed=s" => \$regList,
 ) or die $usage;
@@ -34,7 +36,6 @@ unless(defined $maf){
 	$maf = 0;
 }
 
-my %hash_bed;
 my %hash_keep;
 
 if(defined $keepList){
@@ -47,6 +48,9 @@ if(defined $keepList){
 	close IN;
 }
 
+my %hash_bed;
+my %hash_chr; # This hash is used to check the end of the region list and stop reading vcf
+
 if(defined $regList){
 	open(IN,"<$regList") or die $!;
 	while(<IN>){
@@ -58,6 +62,7 @@ if(defined $regList){
 	close IN;
 	# merge regions
 	foreach my $chr(keys %hash_bed){
+		$hash_chr{$chr} = "";
 		my @starts = sort {$a <=> $b} keys %{$hash_bed{$chr}};
 		for(my $i = 0; $i < @starts; $i++){
 			my $starti = $starts[$i];
@@ -89,7 +94,6 @@ my @keepRanks = ();
 my @remained_chrs = ();
 my $chr_tmp = "";
 my @regions = ();
-my %hash_chr; # This hash is used to check the end of the region list and stop reading vcf
 
 while(<IN>){
 	chomp;
@@ -180,6 +184,9 @@ while(<IN>){
 	if(defined $pass){
 		next unless($filter eq "PASS" or $filter eq "SnpCluster");
 	}
+	if(defined $pass1){
+		next unless($filter eq "PASS");
+	}
 	
 	# Check maf and coverage
 	my @datas = split/\t/, $datas_join;
@@ -244,7 +251,7 @@ sub get_cov_maf{
 			$lostcount += 2;
 		}
 	}
-	
+	# debug 20171117
 	my $cov = 1 - ($lostcount/@genos)/2;
 	my $maf = ($altcount/@genos)/2;
 	my $maf2 = $cov - $maf;
