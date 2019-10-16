@@ -3,6 +3,8 @@ Small scripts for population genetics analysis.
 
 Most of the scripts contain detailed usage in the codes.
 
+Contact me: zhuochen@genetics.ac.cn
+
 ## SNP_group_ratio.pl
 Calculate SNP allele frequency for selected groups of samples.
 
