@@ -3,7 +3,7 @@ use warnings;
 use Getopt::Long;
 
 my($vcf,$out,$cov,$maf,$pass,$pass1,$keepList,$regList,$reg,$misr);
-my $usage = "\nTransform vcf to fasta format sequence.\nBy Zhuo Chen\nEmail: zhuochenbioinfo\@gmail.com\n\n";
+my $usage = "\nTransform vcf to fasta format sequence.\nBy Zhuo Chen\nEmail: chenomics\@163.com\n\n";
 $usage .= "Notice: the program picks only bi-allelic SNPs.\n";
 $usage .= "USAGE:\nperl $0 --in <input vcf> --out <output prefix>\n";
 $usage .= "<input vcf> is the input vcf file. [Necessary]\n";
