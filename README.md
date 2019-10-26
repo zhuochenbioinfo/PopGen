@@ -33,5 +33,5 @@ Transform VCF file to group allele frequency table. Prepare input file for [Tree
 Transform VCF file to eigenstart geno format. Typically for [ADMIXTURE](http://software.genetics.ucla.edu/admixture/) inputs.
 
 ## vcf_to_fasta.pl
-Pick SNPs from VCF file and transform to fasta format sequences for selected samples.
+Pick SNPs from VCF file and transform to aligned fasta format sequences for selected samples.
 
