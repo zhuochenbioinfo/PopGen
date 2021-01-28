@@ -1,3 +1,10 @@
+=credit
+By Zhuo CHEN, IGDB, CAS
+Contact: chenomics@163.com
+zhuochen@genetics.ac.cn
+=cut
+
+
 use strict;
 use warnings;
 use Getopt::Long;
